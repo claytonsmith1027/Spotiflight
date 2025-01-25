@@ -9,12 +9,19 @@ if (!code) {
     const profile = await fetchProfile(accessToken);
     populateUI(profile);
     try{
-        const newPlaylist = await createPlaylist("TEST", profile, accessToken);
-        console.log("Created playlist:", newPlaylist);
+        const topSongs = await getTopSongs(profile, accessToken);
+        console.log("Got top songs:", topSongs);
     }
     catch (error) {
-        console.error("Failed to create playlist:", error);
+        console.error("Failed to get top songs:", error);
     }
+    // try{
+    //     const newPlaylist = await createPlaylist("TEST", profile, accessToken);
+    //     console.log("Created playlist:", newPlaylist);
+    // }
+    // catch (error) {
+    //     console.error("Failed to create playlist:", error);
+    // }
 }
 
 export async function redirectToAuthCodeFlow(clientId) {
@@ -27,7 +34,7 @@ export async function redirectToAuthCodeFlow(clientId) {
     params.append("client_id", clientId);
     params.append("response_type", "code");
     params.append("redirect_uri", "http://localhost:5173/callback");
-    params.append("scope", "user-read-private user-read-email playlist-modify-public playlist-modify-private");
+    params.append("scope", "user-read-private user-read-email playlist-modify-public playlist-modify-private user-top-read");
     params.append("code_challenge_method", "S256");
     params.append("code_challenge", challenge);
 
@@ -123,3 +130,24 @@ async function createPlaylist(playListName, profile, token) {
     }
   }
   
+  async function getTopSongs(profile, token) {
+    try {
+      const songsResults = await fetch(`https://api.spotify.com/v1/me/top/tracks`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      });
+  
+      if (!songsResults.ok) {
+        throw new Error(`HTTP error! status: ${songsResults.status}`);
+      }
+  
+      const topSongs = await songsResults.json();
+      return topSongs;
+    } catch (error) {
+      console.error("Error getting top songs:", error);
+      throw error;
+    }
+  }
