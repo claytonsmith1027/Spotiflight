@@ -8,6 +8,13 @@ if (!code) {
     const accessToken = await getAccessToken(clientId, code);
     const profile = await fetchProfile(accessToken);
     populateUI(profile);
+    try{
+        const newPlaylist = await createPlaylist("TEST", profile, accessToken);
+        console.log("Created playlist:", newPlaylist);
+    }
+    catch (error) {
+        console.error("Failed to create playlist:", error);
+    }
 }
 
 export async function redirectToAuthCodeFlow(clientId) {
@@ -20,7 +27,7 @@ export async function redirectToAuthCodeFlow(clientId) {
     params.append("client_id", clientId);
     params.append("response_type", "code");
     params.append("redirect_uri", "http://localhost:5173/callback");
-    params.append("scope", "user-read-private user-read-email");
+    params.append("scope", "user-read-private user-read-email playlist-modify-public playlist-modify-private");
     params.append("code_challenge_method", "S256");
     params.append("code_challenge", challenge);
 
@@ -71,7 +78,6 @@ async function fetchProfile(token) {
     const result = await fetch("https://api.spotify.com/v1/me", {
         method: "GET", headers: { Authorization: `Bearer ${token}` }
     });
-
     return await result.json();
 }
 
@@ -90,3 +96,30 @@ function populateUI(profile) {
     document.getElementById("url").innerText = profile.href;
     document.getElementById("url").setAttribute("href", profile.href);
 }
+
+async function createPlaylist(playListName, profile, token) {
+    try {
+      const playlistResult = await fetch(`https://api.spotify.com/v1/users/${profile.id}/playlists`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          name: playListName,
+          public: false // Set to true if you want the playlist to be public
+        })
+      });
+  
+      if (!playlistResult.ok) {
+        throw new Error(`HTTP error! status: ${playlistResult.status}`);
+      }
+  
+      const playlist = await playlistResult.json();
+      return playlist;
+    } catch (error) {
+      console.error("Error creating playlist:", error);
+      throw error;
+    }
+  }
+  
