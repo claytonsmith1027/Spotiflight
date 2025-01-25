@@ -11,6 +11,9 @@ if (!code) {
     try{
         const topSongs = await getTopSongs(profile, accessToken);
         console.log("Got top songs:", topSongs);
+        const playlist = await createPlaylist("Test1", profile, accessToken);
+        const formattedSongArray = createSongListFromTime(600000, topSongs.items);
+        const addSongResult = await addSongs(playlist, formattedSongArray, accessToken);
     }
     catch (error) {
         console.error("Failed to get top songs:", error);
@@ -104,6 +107,22 @@ function populateUI(profile) {
     document.getElementById("url").setAttribute("href", profile.href);
 }
 
+function getSongLengthMs(trackObject){
+    if (!trackObject){
+        console.error("Recieved empty trackObject");
+    }else{
+        return trackObject.target_duration_ms;
+    }
+}
+
+function getSongLengthSec(trackObject){
+    if (!trackObject){
+        console.error("Received empty trackObject");
+    }else{
+        return getSongLengthMs(trackObject) * 1000
+    }
+}
+
 async function createPlaylist(playListName, profile, token) {
     try {
       const playlistResult = await fetch(`https://api.spotify.com/v1/users/${profile.id}/playlists`, {
@@ -123,12 +142,45 @@ async function createPlaylist(playListName, profile, token) {
       }
   
       const playlist = await playlistResult.json();
+      console.log(playlist);
       return playlist;
     } catch (error) {
       console.error("Error creating playlist:", error);
       throw error;
     }
   }
+
+  function formatSongString(trackId){
+    return "spotify:track:" + trackId;
+  }
+
+  async function addSongs(playlist, formattedSongsArray, token){
+    try {
+        console.log("Trying to add songs");
+        console.log("playlist id: " + playlist.id);
+        console.log(formattedSongsArray.join(','));
+        const addResult = await fetch(`https://api.spotify.com/v1/playlists/${playlist.id}/tracks`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            uris: formattedSongsArray
+          })
+        });
+    
+        if (!addResult.ok) {
+          throw new Error(`HTTP error! status: ${addResult.status}`);
+        }
+    
+        const addResultJson = await addResult.json();
+        return addResultJson;
+      } catch (error) {
+        console.error("Error adding songs to playlist:", error);
+        throw error;
+      }
+}
   
   async function getTopSongs(profile, token) {
     try {
@@ -151,3 +203,17 @@ async function createPlaylist(playListName, profile, token) {
       throw error;
     }
   }
+
+function createSongListFromTime(timeGoal, tracks){
+    var addedTracks = [];
+    var time = 0;
+
+    for (const track of tracks) {
+        if (time + track.duration_ms <= timeGoal) {
+          addedTracks.push(formatSongString(track.id));
+          time += track.duration_ms;
+        }
+    }
+    
+    return addedTracks;
+}
