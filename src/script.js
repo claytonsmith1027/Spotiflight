@@ -9,7 +9,7 @@ if (!code) {
     const profile = await fetchProfile(accessToken);
     populateUI(profile);
     try{
-        const topSongs = await getTopSongs(profile, accessToken);
+        const topSongs = await getTopSongs(accessToken, 5);
         console.log("Got top songs:", topSongs);
         const playlist = await createPlaylist("Test1", profile, accessToken);
         const formattedSongArray = createSongListFromTime(600000, topSongs.items);
@@ -156,9 +156,13 @@ async function createPlaylist(playListName, profile, token) {
 
   async function addSongs(playlist, formattedSongsArray, token){
     try {
+        console.log(formattedSongsArray);
         console.log("Trying to add songs");
         console.log("playlist id: " + playlist.id);
         console.log(formattedSongsArray.join(','));
+        if(formattedSongsArray.length == 0){
+            throw new Error('No songs');
+        }
         const addResult = await fetch(`https://api.spotify.com/v1/playlists/${playlist.id}/tracks`, {
           method: "POST",
           headers: {
@@ -182,9 +186,9 @@ async function createPlaylist(playListName, profile, token) {
       }
 }
   
-  async function getTopSongs(profile, token) {
+  async function getTopSongs(token, count) {
     try {
-      const songsResults = await fetch(`https://api.spotify.com/v1/me/top/tracks`, {
+      const songsResults = await fetch(`https://api.spotify.com/v1/me/top/tracks?limit=${count}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -217,3 +221,4 @@ function createSongListFromTime(timeGoal, tracks){
     
     return addedTracks;
 }
+
