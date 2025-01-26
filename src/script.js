@@ -12,7 +12,7 @@ if (!code) {
         const topSongs = await getTopSongs(accessToken, 5);
         console.log("Got top songs:", topSongs);
         const playlist = await createPlaylist("Test1", profile, accessToken);
-        const formattedSongArray = createSongListFromTime(600000, topSongs.items);
+        const formattedSongArray = createSongListFromTime(6000000, topSongs.items);
         const addSongResult = await addSongs(playlist, formattedSongArray, accessToken);
     }
     catch (error) {
@@ -107,22 +107,6 @@ function populateUI(profile) {
     document.getElementById("url").setAttribute("href", profile.href);
 }
 
-function getSongLengthMs(trackObject){
-    if (!trackObject){
-        console.error("Recieved empty trackObject");
-    }else{
-        return trackObject.target_duration_ms;
-    }
-}
-
-function getSongLengthSec(trackObject){
-    if (!trackObject){
-        console.error("Received empty trackObject");
-    }else{
-        return getSongLengthMs(trackObject) * 1000
-    }
-}
-
 async function createPlaylist(playListName, profile, token) {
     try {
       const playlistResult = await fetch(`https://api.spotify.com/v1/users/${profile.id}/playlists`, {
@@ -208,17 +192,37 @@ async function createPlaylist(playListName, profile, token) {
     }
   }
 
+async function getRecommendations(topFiveJson){
+    var seedArray = [];
+    for (track in topFiveJson){
+        seedArray.push(track.id);
+    }
+    try{
+        const recResults = await fetch(`https://api.spotify.com/v1/recommendations?seed_tracks=${seedArray.join(',')}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+            }
+          });
+    } catch (error){
+        console.error("Error getting recommendations", error);
+        throw error;
+    }
+    
+}
+
 function createSongListFromTime(timeGoal, tracks){
     var addedTracks = [];
     var time = 0;
 
     for (const track of tracks) {
-        if (time + track.duration_ms <= timeGoal) {
-          addedTracks.push(formatSongString(track.id));
-          time += track.duration_ms;
-        }
+        addedTracks.push(formatSongString(track.id));
+        time += track.duration_ms;
+        if (time > timeGoal){break;}
     }
-    
+
+    addedTracks.concat(addedTracks);
     return addedTracks;
 }
 
