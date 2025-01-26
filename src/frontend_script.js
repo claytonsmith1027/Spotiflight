@@ -51,6 +51,9 @@ async function get_flight(num, date1) {
         console.log("Finished run"); // FINSIHED MAKING THE PLAYLIST (ON THE ACCOUNT)
         // Everything after this will run after time wise
         // Stuff here to tell user that its done :)
+        displaySpotify();
+
+
     } catch (error) {
         console.log("Failed to get flight:", error.message);
     }
@@ -58,6 +61,7 @@ async function get_flight(num, date1) {
 
 
 function displaySpotify(){
+    console.log("User message dispalayed")
     spotify.innerHTML = ` 
             <p>
                 Downloaded!

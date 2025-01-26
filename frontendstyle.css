@@ -8,12 +8,71 @@ body {
 
 .tittle{
     text-align: center;
-    background-color: rgb(103, 206, 185);
+    border-radius: 20%;
+    margin-left: 10%;
+    margin-right: 10%;
+    background-image: url("logo.jpg");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    padding: 230px;
+}
+
+@keyframes planes {
+    0% {top: 0px; left: 0px}
+    100% {left: 50%; top: -400px;}
+
+
+
 
 }
+.plane{
+    width: 100px;
+    height: 100px;
+    position: relative;
+    animation-name: planes;
+    animation-duration: 100s;  
+    animation-fill-mode: forwards;
+
+}
+
 
 .form{
     text-align: center;
 
+
+}
+.inputs{
+    text-align: center;
+
+}
+.spotify{
+    text-align: center;
+
+}
+
+
+.landsape{
+    position: absolute;
+    text-align: center;
+    border-radius: 20%;
+    margin-left: 5%;
+    margin-right: 5%;
+    bottom: 0%;
+    background-image: url("landscape.png");
+    background-size: 100% 100%;
+    padding: 150px;
+    text-align: right;
+    overflow: hidden;
+    background-position: right;
+    
+}
+
+.extior{
+    background-color: rgb(145, 177, 199);
+    text-align: center;
+    border-radius: 20%;
+    margin-left: 10%;
+    margin-right: 10%;
 
 }
