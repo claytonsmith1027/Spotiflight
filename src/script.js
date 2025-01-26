@@ -19,10 +19,13 @@ if (!code) {
         //     const songsInAlbum = await getSongsFromAlbum(album, accessToken);
         //     console.log(songsInAlbum);
         // }
-
+        console.log("Starting");
         const playlist = await createPlaylist("Test1", profile, accessToken); // Creates an empty playlist
-        const formattedSongArray = await createSongListFromTime(12000000, accessToken); // Creates an array of formatted strings with songs adding to given time
+        console.log("Made playlist");
+        const formattedSongArray = await createSongListFromTime(3600000, accessToken); // Creates an array of formatted strings with songs adding to given time
+        console.log("Got songs");
         const addSongResult = await addSongs(playlist, formattedSongArray, accessToken); // adds songs to playlist
+        console.log("Adding songs");
         
     }
     catch (error) {
@@ -147,33 +150,45 @@ async function createPlaylist(playListName, profile, token) {
     return "spotify:track:" + trackId;
   }
 
-  async function addSongs(playlist, formattedSongsArray, token){
+  async function addSongs(playlist, formattedSongsArray, token) {
     try {
-        if(formattedSongsArray.length == 0){
-            throw new Error('No songs');
-        }
-        const addResult = await fetch(`https://api.spotify.com/v1/playlists/${playlist.id}/tracks`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            uris: formattedSongsArray
-          })
-        });
-    
-        if (!addResult.ok) {
-          throw new Error(`HTTP error! status: ${addResult.status}`);
-        }
-    
-        const addResultJson = await addResult.json();
-        return addResultJson;
-      } catch (error) {
-        console.error("Error adding songs to playlist:", error);
-        throw error;
+      if (formattedSongsArray.length === 0) {
+        throw new Error('No songs');
       }
-}
+  
+      // Take the first 99 songs from the array
+      const songsToAdd = formattedSongsArray.slice(0, 99);
+      const remainingSongs = formattedSongsArray.slice(99);
+  
+      const addResult = await fetch(`https://api.spotify.com/v1/playlists/${playlist.id}/tracks`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          uris: songsToAdd
+        })
+      });
+  
+      if (!addResult.ok) {
+        throw new Error(`HTTP error! status: ${addResult.status}`);
+      }
+  
+      const addResultJson = await addResult.json();
+  
+      // If there are remaining songs, call the function recursively
+      if (remainingSongs.length > 0) {
+        return await addSongs(playlist, remainingSongs, token);
+      }
+  
+      return addResultJson;
+    } catch (error) {
+      console.error("Error adding songs to playlist:", error);
+      throw error;
+    }
+  }
+  
   
   async function getTopSongs(token, count) {
     try {
@@ -253,11 +268,12 @@ function fisherYatesShuffle(arr) {
 }
 
 async function createSongListFromTime(timeGoal, token){
+    const hours = Math.ceil(timeGoal/3600000);
     var addedTracks = [];
     var time = 0;
     var releaseOffest = 0 + random(0,10);
     const requestAlmbumCount = 20;
-    const albumSongLimit = 4;
+    const albumSongLimit = 1 + hours;
 
     while (time <= timeGoal){
         const albums = await getNewAlbums(requestAlmbumCount, releaseOffest, token);
