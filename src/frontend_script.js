@@ -63,7 +63,6 @@ async function get_flight(num, date1) {
 function displaySpotify(temp, dest){
     console.log("User message dispalayed")
     land.innerText = "Check your spotifiy your " + dest+ " playlist for " + temp+ " is ready!"
-
     
 }
 

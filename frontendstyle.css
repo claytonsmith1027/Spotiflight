@@ -1,86 +1,126 @@
 body {
     background-color: azure;
-    font-size: 50;
-
-
-
-}
-
-.tittle{
-    text-align: center;
-    border-radius: 20%;
-    margin-left: 10%;
-    margin-right: 10%;
-    background-image: url("logo.jpg");
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    overflow: hidden;
-    padding: 230px;
-}
-
-@keyframes planes {
-    0% {top: 0px; left: 0px}
-    100% {left: 50%; top: -400px;}
-
-
-
-
-}
-@media screen and (max-width: 150px) {
-    .tittle {
-      padding: 230px;
-    }
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
   }
-
-
-.plane{
-    width: 100px;
-    height: 100px;
-    position: relative;
-    animation-name: planes;
-    animation-duration: 100s;  
-    animation-fill-mode: forwards;
-
-}
-
-
-.form{
-    text-align: center;
-    margin-bottom: 5%;
-
-
-}
-.inputs{
-    text-align: center;
-
-}
-.spotify{
-    text-align: center;
-
-}
-
-
-.landsape{
-    position: absolute;
-    text-align: center;
-    border-radius: 20%;
-    
-    margin-left: 5%;
-    margin-right: 10%;
-    margin-top: 1%;
-    
-    background-image: url("landscape.png");
-    background-size: 100% 100%;
-    padding: 10%;
-    overflow: hidden;
-    
-}
-
-.extior{
+  
+  .container {
+    max-width: 1200px;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .extior {
     background-color: rgb(145, 177, 199);
     text-align: center;
-    border-radius: 20%;
-    margin-left: 10%;
-    margin-right: 10%;
-
-}
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tittle {
+    text-align: center;
+    border-radius: 20px;
+    background-image: url("logo.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    overflow: hidden;
+    padding: 120px;
+    margin-bottom: 20px;
+  }
+  
+  .plane {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    position: relative;
+    animation: planes 20s linear;
+  }
+  
+  @keyframes planes {
+    0% {
+      transform: translateY(0) translateX(-50%);
+    }
+    100% {
+      transform: translateY(-50px) translateX(0);
+    }
+    
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .inputs {
+    margin-bottom: 20px;
+  }
+  
+  .inputs input {
+    margin: 5px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  .spotify {
+    margin-bottom: 20px;
+  }
+  
+  .landscape {
+    text-align: center;
+    border-radius: 20px;
+    background-image: url("landscape.png");
+    background-size: cover;
+    background-position: center;
+    padding: 50px 20px;
+    margin-top: 20px;
+  }
+  
+  .landscape h1 {
+    
+    padding: 10px;
+    border-radius: 10px;
+    display: inline-block;
+  }
+  
+  @media (max-width: 768px) {
+    .tittle {
+      padding: 50px 0;
+    }
+  
+    .form {
+      flex-direction: column;
+    }
+  
+    .plane {
+      width: 80px;
+      height: 80px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    body {
+      font-size: 14px;
+    }
+  
+    .tittle {
+      padding: 30px 0;
+    }
+  
+    .plane {
+      width: 60px;
+      height: 60px;
+    }
+  }
+  
+  

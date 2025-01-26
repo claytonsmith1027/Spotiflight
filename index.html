@@ -1,73 +1,41 @@
 <!DOCTYPE html>
-
-<html>
-    <head>
-        <title>
-            airline matcher
-        </title>
-        <link rel = "stylesheet" href = "frontendstyle.css">
-        <link rel = "stylesheet" href = "https://fonts.googleapis.com/icon?family=Material+Icon">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        
-    </head>
-    <body>
-    <div class = "extior">
-        <div class = "heading">
-            <h1 class = "tittle">
-                <img scr = "cloud.png">
-            </h1>
-           <!-- <img src = "https://liviutudor.com/wp-content/uploads/2016/06/american_airlines-150x150.png">-->
-            <img scr = "cloud.png">
-            
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpotiFlight</title>
+    <link rel="stylesheet" href="frontendstyle.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="extior">
+            <div class="heading">
+                <h1 class="tittle">
+                   <!-- <img src="cloud.png" alt="Cloud"> -->
+                </h1>
+               <!-- <img src="cloud.png" alt="Cloud"> -->
+            </div>
+            <h2 class="inputs">What will you listen to?</h2>
+            <div class="inputs">
+                <p>Enter your flight number and date!</p>
+                <form id="form" class="form">
+                    <input type="number" id="flight_num" name="q" placeholder="flight number">
+                    <input type="date" id="date" name="q">
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
+            <div class="plane">
+                <img src="plane.png" alt="flying plane">
+            </div>
+            <div class="spotify" id="section"></div>
+            <div class="landscape" id = "landscape">
+                <h1>"The best music is essentially there to provide you something to face the world with." --Bruce Springsteen</h1>
+            </div>
         </div>
-        <h2 class = "inputs"> What will you listen too?</h2>
-        <div class = "inputs">
-            <p>Enter in your filght number and date!</p>
-            <form  id ="form" class = "form">
-                <input type = "number" id = "flight_num" name = "q" placeholder = "flight number"> 
-                <input type = "date" id = "date" name = "q" placeholder = "Search..">
-                <input type = "submit" value="Submit" >
-            </form>
-            
-        </div>
-        <div class="plane">
-            <img src = "plane.png" alt = "flying plane" >
-        </div>
-
-
-
-        <div class = "spotify" id = "section" >
-        </div>
-      
-
-
-
-         <div>  
-            <h1 class ="landsape" id = 'landscape'>
-            "The best music is essentially there to provide you something to face the world with." --Bruce Springsteen
-            </h1>
-
-
-        </div>
-
-
-   
-
-
-
-
-
-
-
-
-    </body>
-
-
-
-
-
-
+    </div>
     <script type="module" src="../src/frontend_script.js"></script>
-
-
+</body>
 </html>
+
