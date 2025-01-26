@@ -1,24 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+
+<html>
     <head>
-        <meta charset="utf-8">
-        <title>My Spotify Profile</title>
-        <script src="src/script.js" type="module"></script>
+        <title>
+            airline matcher
+        </title>
+        <link rel = "stylesheet" href = "frontendstyle.css">
+        <link rel = "stylesheet" href = "https://fonts.googleapis.com/icon?family=Material+Icon">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        
     </head>
     <body>
-      <h1>Display your Spotify profile data</h1>
+        
+        <div class = "heading">
+            <h1 class = "tittle">What should I listen too?</h1>
+            <img href = "https://liviutudor.com/wp-content/uploads/2016/06/american_airlines-150x150.png">
+            
+            
+        </div>
+        <div class = "inputs">
+            <p>Enter in your filght number and date!</p>
+            <form  id ="form">
+                <input type = "number" id = "flight_num" name = "q" placeholder = "flight number"> 
+                <input type = "date" id = "date" name = "q" placeholder = "Search..">
+                <input type = "submit" value="Submit" >
+            </form>
+            
+        </div>
+        <div class = "filght" id = "flight">
+    
 
-      <section id="profile">
-      <h2>Logged in as <span id="displayName"></span></h2>
-      <span id="avatar"></span>
-      <ul>
-          <li>User ID: <span id="id"></span></li>
-          <li>Email: <span id="email"></span></li>
-          <li>Spotify URI: <a id="uri" href="#"></a></li>
-          <li>Link: <a id="url" href="#"></a></li>
-          <li>Profile Image: <span id="imgUrl"></span></li>
-      </ul>
-      </section>
-      
+
+        </div>
+
+        <div class = "spotify" id = "section" >
+            <p>
+                Downloaded!
+                Check your spotify!
+            </p>
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+
     </body>
+
+
+
+
+
+
+    <script type="module" src="../src/frontend_script.js"></script>
+
+
 </html>

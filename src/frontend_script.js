@@ -1,5 +1,7 @@
-import script1 from "script.js"
+import { run, auth } from "./script.js";
 
+const params = new URLSearchParams(window.location.search);
+const code = params.get("code");
 const LINK = "https://flight-engine-h6md.onrender.com";
 const number = document.getElementById("flight_num");
 const main = document.getElementById("section");
@@ -8,57 +10,61 @@ const date = document.getElementById("date");
 const flight = document.getElementById("flight");
 const spotify = document.getElementsByClassName("spotify");
 if(form === null){
-    console.log("dang")
+    console.log("Form is null")
+}
+
+if (!code) { // checked everytime the site opens (checks if spotify is linked)
+    auth();
 }
 
 
 //get_flight("5029", "2025-01-22");
 
 
-
-
-
-function get_flight(num, date1){
-
-    var search_string = LINK + "/flights?date="+date1+"&flightNumber=" + num;
-    var time;
+async function get_flight(num, date1) {
+    console.log("Trying to get flight data in get_flight");
+    const search_string = `${LINK}/flights?date=${date1}&flightNumber=${num}`;
     console.log(search_string);
-    try{
-    fetch(search_string)
-        .then((response) => response.json())
-        .then((json) =>{ 
-            //var count = desplay_flights(json);
-            time = json[0].duration.locale;
-            console.log(time)
-            time = convert_time(time)
-            console.log(time)
-            script1.run(time, "flight to " + json[0].destination.city )
-            
+    console.log("Flight num: ", num);
+    console.log("Date: ", date1);
+
+    try {
+        const response = await fetch(search_string);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-    
-    
-    
-    );
-    }
-    catch{
-        console.log("error");
-    }
+        const json = await response.json();
 
+        if (!json || json.length === 0) {
+            throw new Error("No flight data received");
+        }
 
+        const flight = json[0];
+        if (!flight.duration || !flight.duration.locale || !flight.destination || !flight.destination.city) {
+            throw new Error("Flight data is incomplete");
+        }
+
+        const time = convert_time(flight.duration.locale);
+        console.log("Converted time:", time);
+
+        await run(time, `Flight to ${flight.destination.city}`); // CALLING TO CREATE THE PLAYLIST
+        console.log("Finished run"); // FINSIHED MAKING THE PLAYLIST (ON THE ACCOUNT)
+        // Everything after this will run after time wise
+        // Stuff here to tell user that its done :)
+    } catch (error) {
+        console.log("Failed to get flight:", error.message);
+    }
 }
-function desplay_spotify(){
+
+
+function displaySpotify(){
     spotify.innerHTML = ` 
             <p>
                 Downloaded!
                 Check your spotify!
             </p>
-    
-    
-    
+
     `
-
-
-
 }
 
 
@@ -76,16 +82,15 @@ function convert_time(time){
     var mn = parseInt(minute[0], 10)
     var new_time = hr * 60 * 60000 + mn *60000
     return new_time;
-
 }
 
 
-function desplay_flights(json){
+function displayFlights(json){
     var i  = 0;
-    var str = ""
+    var str = "";
     //console.log(json)
     while(i < json.length){
-        console.log("in desplay_flights")
+        console.log("in displayFlights")
         str += "<form>"
         str += "<p>"
         str += "leaving from: \n"
@@ -104,12 +109,12 @@ function desplay_flights(json){
     flight.innerHTML = str;
      flight.addEventListener("submit", (e) =>{
         e.preventDefault();
-        console.log("got here! 2")
+        console.log("got here! 2");
       
         return find_element(i);
         } );
      
-        desplay_flights(json);
+        displayFlights(json);
 
 
 
@@ -142,9 +147,10 @@ function desplay_flights(json){
 
 
 
-form.addEventListener("submit", (e) =>{
+
+    form.addEventListener("submit", (e) =>{
     e.preventDefault();
-    console.log("got here!")
+    console.log("Submitted");
   
     const searchNum = number.value;
     const serchDate = date.value

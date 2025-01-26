@@ -2,10 +2,20 @@ const clientId = "9b013a625b9146819303c44cc32d0615"; // Replace with your client
 const params = new URLSearchParams(window.location.search);
 const code = params.get("code");
 
-async function run(timeGoal, playlistName){
+export async function auth(){
     if (!code) {
+        console.log("Sending Spotify auth");
+        redirectToAuthCodeFlow(clientId);
+    }
+}
+
+export async function run(timeGoal, playlistName){
+    console.log("Ran main function");
+    if (!code) {
+        console.log("Sending Spotify auth");
         redirectToAuthCodeFlow(clientId);
     } else {
+        console.log("Got auth");
         const accessToken = await getAccessToken(clientId, code);
         const profile = await fetchProfile(accessToken);
         try{
@@ -61,7 +71,7 @@ async function run(timeGoal, playlistName){
 //     // }
 // }
 
-export async function redirectToAuthCodeFlow(clientId) {
+async function redirectToAuthCodeFlow(clientId) {
     const verifier = generateCodeVerifier(128);
     const challenge = await generateCodeChallenge(verifier);
 
