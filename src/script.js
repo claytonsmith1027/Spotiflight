@@ -2,43 +2,64 @@ const clientId = "9b013a625b9146819303c44cc32d0615"; // Replace with your client
 const params = new URLSearchParams(window.location.search);
 const code = params.get("code");
 
-if (!code) {
-    redirectToAuthCodeFlow(clientId);
-} else {
-    const accessToken = await getAccessToken(clientId, code);
-    const profile = await fetchProfile(accessToken);
-    //populateUI(profile);
-    try{
-        // const topSongs = await getTopSongs(accessToken, 1);
-        // console.log("Got top songs:", topSongs);
-        
-        // const newReleaseResults = await getNewAlbums(20,0,accessToken);
-        // console.log("Got new release results", newReleaseResults);
-        // for (const album of newReleaseResults.albums.items){
-        //     console.log(album.name);
-        //     const songsInAlbum = await getSongsFromAlbum(album, accessToken);
-        //     console.log(songsInAlbum);
-        // }
-        console.log("Starting");
-        const playlist = await createPlaylist("Test1", profile, accessToken); // Creates an empty playlist
-        console.log("Made playlist");
-        const formattedSongArray = await createSongListFromTime(3600000, accessToken); // Creates an array of formatted strings with songs adding to given time
-        console.log("Got songs");
-        const addSongResult = await addSongs(playlist, formattedSongArray, accessToken); // adds songs to playlist
-        console.log("Adding songs");
-        
+async function run(timeGoal, playlistName){
+    if (!code) {
+        redirectToAuthCodeFlow(clientId);
+    } else {
+        const accessToken = await getAccessToken(clientId, code);
+        const profile = await fetchProfile(accessToken);
+        try{
+            console.log("Starting Main");
+            const playlist = await createPlaylist(playlistName, profile, accessToken); // Creates an empty playlist
+            console.log("Made playlist, finding songs");
+            const formattedSongArray = await createSongListFromTime(timeGoal, accessToken); // Creates an array of formatted strings with songs adding to given time
+            console.log("Got songs, trying to add");
+            const addSongResult = await addSongs(playlist, formattedSongArray, accessToken); // adds songs to playlist
+            console.log("Added songs");
+        }
+        catch (error) {
+            console.error("Failed main program: ", error);
+        }
     }
-    catch (error) {
-        console.error("Failed main program: ", error);
-    }
-    // try{
-    //     const newPlaylist = await createPlaylist("TEST", profile, accessToken);
-    //     console.log("Created playlist:", newPlaylist);
-    // }
-    // catch (error) {
-    //     console.error("Failed to create playlist:", error);
-    // }
 }
+
+// if (!code) {
+//     redirectToAuthCodeFlow(clientId);
+// } else {
+//     const accessToken = await getAccessToken(clientId, code);
+//     const profile = await fetchProfile(accessToken);
+//     //populateUI(profile);
+//     try{
+//         // const topSongs = await getTopSongs(accessToken, 1);
+//         // console.log("Got top songs:", topSongs);
+        
+//         // const newReleaseResults = await getNewAlbums(20,0,accessToken);
+//         // console.log("Got new release results", newReleaseResults);
+//         // for (const album of newReleaseResults.albums.items){
+//         //     console.log(album.name);
+//         //     const songsInAlbum = await getSongsFromAlbum(album, accessToken);
+//         //     console.log(songsInAlbum);
+//         // }
+//         console.log("Starting");
+//         const playlist = await createPlaylist("Test1", profile, accessToken); // Creates an empty playlist
+//         console.log("Made playlist");
+//         const formattedSongArray = await createSongListFromTime(3600000, accessToken); // Creates an array of formatted strings with songs adding to given time
+//         console.log("Got songs");
+//         const addSongResult = await addSongs(playlist, formattedSongArray, accessToken); // adds songs to playlist
+//         console.log("Adding songs");
+        
+//     }
+//     catch (error) {
+//         console.error("Failed main program: ", error);
+//     }
+//     // try{
+//     //     const newPlaylist = await createPlaylist("TEST", profile, accessToken);
+//     //     console.log("Created playlist:", newPlaylist);
+//     // }
+//     // catch (error) {
+//     //     console.error("Failed to create playlist:", error);
+//     // }
+// }
 
 export async function redirectToAuthCodeFlow(clientId) {
     const verifier = generateCodeVerifier(128);
