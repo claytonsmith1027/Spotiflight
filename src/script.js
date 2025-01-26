@@ -9,11 +9,13 @@ if (!code) {
     const profile = await fetchProfile(accessToken);
     populateUI(profile);
     try{
-        const topSongs = await getTopSongs(accessToken, 5);
+        const topSongs = await getTopSongs(accessToken, 1);
         console.log("Got top songs:", topSongs);
-        const playlist = await createPlaylist("Test1", profile, accessToken);
-        const formattedSongArray = createSongListFromTime(6000000, topSongs.items);
-        const addSongResult = await addSongs(playlist, formattedSongArray, accessToken);
+        console.log(topSongs.items);
+        const recResults = await getRecommendations(topSongs.items, accessToken, 30);
+        // const playlist = await createPlaylist("Test1", profile, accessToken);
+        // const formattedSongArray = createSongListFromTime(6000000, topSongs.items);
+        // const addSongResult = await addSongs(playlist, formattedSongArray, accessToken);
     }
     catch (error) {
         console.error("Failed to get top songs:", error);
@@ -192,24 +194,56 @@ async function createPlaylist(playListName, profile, token) {
     }
   }
 
-async function getRecommendations(topFiveJson){
-    var seedArray = [];
-    for (track in topFiveJson){
-        seedArray.push(track.id);
-    }
+
+// async function getRecommendations(tracks, token,count){
+//     var seedArray = [];
+//     console.log(tracks);
+//     for (const track of tracks){
+//         seedArray.push(track.id);
+//     }
+//     try{
+//         console.log("Trying to get rec with: ", seedArray.join(','));
+//         const recResults = await fetch(`https://api.spotify.com/v1/recommendations?seed_tracks=${seedArray.join('%2C')}&limit=${count}`, {
+//             method: "GET",
+//             headers: {
+//               "Content-Type": "application/json",
+//               Authorization: `Bearer ${token}`
+//             }
+//           });
+
+//           if (!recResults.ok){
+//             throw new Error(`HTTP erro! status : ${recResults.status}`);
+//           }
+
+//           const recommendations = await recResults.json();
+//           console.log("Recs: ", recommendations);
+//           return recommendations;
+//     } catch (error){
+//         console.error("Error getting recommendations", error);
+//         throw error;
+//     }
+// }
+
+async function getNewReleases(limit, offset){
     try{
-        const recResults = await fetch(`https://api.spotify.com/v1/recommendations?seed_tracks=${seedArray.join(',')}`, {
+        const newResults = await fetch(`https://api.spotify.com/v1/browse/new-releases?limit=${limit}&offset=${offset}`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`
             }
           });
-    } catch (error){
-        console.error("Error getting recommendations", error);
-        throw error;
+
+          if (!newResults.ok){
+            throw new Error(`HTTP error status : ${newResults.status}`);
+          }
+
+          const newReleases = await newResults.json();
+          console.logs("New releases: ", newReleases);
+          return newReleases;
+    }catch (error){
+        console.log("error getting new releases", error);
     }
-    
 }
 
 function createSongListFromTime(timeGoal, tracks){
