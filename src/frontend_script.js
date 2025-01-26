@@ -8,7 +8,7 @@ const main = document.getElementById("section");
 const form = document.getElementById("form");
 const date = document.getElementById("date");
 const flight = document.getElementById("flight");
-const spotify = document.getElementsByClassName("spotify");
+const land = document.getElementById("landscape");
 if(form === null){
     console.log("Form is null")
 }
@@ -43,7 +43,7 @@ async function get_flight(num, date1) {
         if (!flight.duration || !flight.duration.locale || !flight.destination || !flight.destination.city) {
             throw new Error("Flight data is incomplete");
         }
-
+        var temp = flight.duration.locale;
         const time = convert_time(flight.duration.locale);
         console.log("Converted time:", time);
 
@@ -51,7 +51,7 @@ async function get_flight(num, date1) {
         console.log("Finished run"); // FINSIHED MAKING THE PLAYLIST (ON THE ACCOUNT)
         // Everything after this will run after time wise
         // Stuff here to tell user that its done :)
-        displaySpotify();
+        displaySpotify(temp, `Flight to ${flight.destination.city}`);
 
 
     } catch (error) {
@@ -60,15 +60,11 @@ async function get_flight(num, date1) {
 }
 
 
-function displaySpotify(){
+function displaySpotify(temp, dest){
     console.log("User message dispalayed")
-    spotify.innerHTML = ` 
-            <p>
-                Downloaded!
-                Check your spotify!
-            </p>
+    land.innerText = "Check your spotifiy your " + dest+ " playlist for " + temp+ " is ready!"
 
-    `
+    
 }
 
 
